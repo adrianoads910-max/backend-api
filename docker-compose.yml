@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8
+    container_name: mysql-dev
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db_mol
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  api:
+    build: .
+    container_name: nest-api
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    command: sh -c "npx prisma migrate dev && pnpm run start:dev"
+
+volumes:
+  mysql_data:
