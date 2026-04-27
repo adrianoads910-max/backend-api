@@ -5,8 +5,8 @@ services:
     image: mysql:8.0
     container_name: mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: senha123
-      MYSQL_DATABASE: meubanco
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: db_mol
     ports:
       - "3307:3306"
     volumes:
@@ -21,12 +21,13 @@ services:
     build: .
     container_name: nestjs-app
     ports:
-      - "3000:3000"
+      - "4000:4000"
     env_file:
       - .env
     depends_on:
       mysql:
         condition: service_healthy
     command: sh -c "npx prisma migrate dev && pnpm run start:dev"
+
 volumes:
   mysql-data:

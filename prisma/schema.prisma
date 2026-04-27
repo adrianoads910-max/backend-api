@@ -14,3 +14,61 @@ model User {
   password  String
   createdAt DateTime @default(now())
 }
+
+model Sample {
+  id          Int                 @id @default(autoincrement())
+  name        String              @db.VarChar(255)
+  description   String?             @db.Text
+  created_at   DateTime            @default(now())
+  substances SampleSubstance[]
+
+  @@map("samples")
+}
+
+model SampleSubstance {
+  id           Int        @id @default(autoincrement())
+  sample      Sample    @relation(fields: [sampleId], references: [id], onDelete: Cascade)
+  sampleId    Int
+  substance   Substance @relation(fields: [substanceId], references: [id], onDelete: Cascade)
+  substanceId Int
+  relativeArea Float?     @db.Float
+  extraNote    String?    @db.Text
+
+  @@unique([sampleId, substanceId])
+  @@map("samples_substances")
+}
+
+model Substance {
+  id               Int                 @id @default(autoincrement())
+  nist             Float               @db.Float
+  tR               Float               @db.Float
+  name             String              @db.VarChar(255)
+  class           String              @db.VarChar(100)
+  molecularFormula String              @db.VarChar(50)
+  molecularWeight    Float               @db.Float
+  ionBase          BaseIon?
+  otherIons       FragmentIon[]
+  samples         SampleSubstance[]
+
+  @@map("substances")
+}
+
+model BaseIon {
+  id           Int        @id @default(autoincrement())
+  mz           Int
+  intensity  Float      @db.Float
+  substance   Substance @relation(fields: [substanceId], references: [id], onDelete: Cascade)
+  substanceId Int        @unique
+
+  @@map("base_ions")
+}
+
+model FragmentIon {
+  id           Int        @id @default(autoincrement())
+  mz           Int
+  intensity  Float      @db.Float
+  substance   Substance @relation(fields: [substanceId], references: [id], onDelete: Cascade)
+  substanceId Int
+
+  @@map("fragment_ions")
+}
