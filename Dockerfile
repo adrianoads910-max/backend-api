@@ -22,7 +22,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # 7. Expõe a porta
-EXPOSE 3000
+EXPOSE 4000
 
 # O CMD do Dockerfile é o "padrão", mas lembre-se que o seu 
 # docker-compose.yml está sobrescrevendo isso com o comando de migrate.
