@@ -24,7 +24,7 @@ export class UsersService {
     const user = await this.prisma.user.create({
       data: { ...dto, password: hashed },
     });
-    console.log('User created successfully');
+    console.log('User criado com sucesso');
 
     const { password, ...result } = user;
     return result;
@@ -32,25 +32,26 @@ export class UsersService {
 
 
   async findAll() {
-    return this.prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        createdAt: true,
-      },
-    });
-    console.log('Users retrieved successfully');
-  }
+  const users = await this.prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+    },
+  });
+  console.log('Users encontrados:', users.length);
+  return users;
+}
 
     async findOne(id: number) {
     const user = await this.prisma.user.findUnique({ where: { id } });
 
     if (!user) throw new NotFoundException('Usuário não encontrado');
-    console.log('User retrieved successfully');
+    console.log('Usuário não encontrado:', user.id);
 
     const { password, ...result } = user;
-    console.log('User retrieved successfully');
+    console.log('Usuário encontrado:', user.id);
     return result;
    
   }
@@ -61,7 +62,7 @@ export class UsersService {
     }
     const user = await this.prisma.user.update({ where: { id }, data: dto });
     const { password, ...result } = user;
-    console.log('User updated successfully');
+    console.log('Usuário atualizado com sucesso');
     return result;
   }
 
@@ -71,7 +72,7 @@ export class UsersService {
 
   async remove(id: number) {
     await this.prisma.user.delete({ where: { id } });
-    console.log('User removed successfully');
+    console.log('Usuário removido com sucesso');
     return { message: 'Usuário removido' };
   }
 }

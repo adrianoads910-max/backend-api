@@ -9,6 +9,7 @@ export class SubstanceService {
   constructor(private prisma: PrismaService) {}
 
   async create(dto: CreateSubstanceDto) {
+    console.log('Substance criada:', dto);
     return this.prisma.substance.create({
       data: {
         nist: dto.nist,
@@ -38,12 +39,15 @@ export class SubstanceService {
   }
 
   async findAll() {
-    return this.prisma.substance.findMany({
+
+    const substances = await this.prisma.substance.findMany({
       include: {
         ionBase: true,
         otherIons: true,
       },
     });
+    console.log('Substances encontradas:', substances.length);
+    return substances;
   }
 
   async findOne(id: number) {
@@ -57,6 +61,7 @@ export class SubstanceService {
 
     if (!substance) throw new NotFoundException("Substance not found");
 
+    console.log('Substance encontrada:', substance.id);
     return substance;
   }
 
@@ -66,6 +71,7 @@ export class SubstanceService {
 
     const { ionBase, otherIons, ...rest } = dto;
 
+    console.log('Substance atualizada:', { id, ...rest, ionBase, otherIons });
     return this.prisma.substance.update({
       where: { id },
       data: {

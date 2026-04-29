@@ -2,8 +2,8 @@ version: '3.8'
 
 services:
   mysql:
-    image: mysql:8.0
-    container_name: mysql-container
+    image: mysql:8.0-debian 
+    container_name: mysql-db
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: db_mol
@@ -27,7 +27,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    command: sh -c "npx prisma migrate dev && pnpm run start:dev"
+    command: sh -c "npx prisma migrate deploy && npm run start:prod"
 
 volumes:
   mysql-data:

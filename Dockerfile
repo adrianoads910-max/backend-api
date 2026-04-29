@@ -1,29 +1,43 @@
-# Usando a versão 22 (pode ser a normal ou a -alpine para ser mais leve)
-FROM node:22-alpine
+# ─────────────────────────────────────────
+# Stage 1: Builder
+# ─────────────────────────────────────────
+FROM node:22-alpine AS builder
 
-# 1. Instala o pnpm globalmente para que o sistema o reconheça
-RUN npm install -g pnpm
-
-# 2. Define a pasta de trabalho
 WORKDIR /app
 
-# 3. Copia apenas os arquivos de dependências primeiro
-# Isso ajuda o Docker a não reinstalar tudo se você mudar apenas o código
-COPY package*.json ./
+# Copia manifests primeiro (cache de dependências)
+COPY package.json package-lock.json ./
 
-# 4. Agora sim, instala as dependências do projeto
-RUN npm install
+# Instala TODAS as dependências (dev incluído, necessário pro build)
+RUN npm ci
 
-# 5. Copia o restante dos arquivos do seu projeto
+# Copia o restante do código
 COPY . .
 
-# 6. Gera o Prisma Client e faz o Build
+# Gera o Prisma Client e compila
 RUN npx prisma generate
 RUN npm run build
 
-# 7. Expõe a porta
+# ─────────────────────────────────────────
+# Stage 2: Runner (imagem final enxuta)
+# ─────────────────────────────────────────
+FROM node:22-alpine AS runner
+
+WORKDIR /app
+
+# Copia apenas o necessário do builder
+COPY package.json package-lock.json ./
+
+# Somente dependências de produção
+RUN npm ci --omit=dev
+
+# Copia o build compilado
+COPY --from=builder /app/dist ./dist
+
+# Copia o Prisma (schema + client gerado)
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+
 EXPOSE 4000
 
-# O CMD do Dockerfile é o "padrão", mas lembre-se que o seu 
-# docker-compose.yml está sobrescrevendo isso com o comando de migrate.
 CMD ["node", "dist/src/main.js"]
