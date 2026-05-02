@@ -32,11 +32,13 @@ export class SampleController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
-  @UsePipes(new ZodValidationPipe(updateSampleSchema)) 
-  update(@Param('id') id: string, @Body() dto: UpdateSampleDto) {
-    return this.sampleService.update(+id, dto);
-  }
+@UseGuards(JwtAuthGuard)
+update(
+  @Param('id') id: string,
+  @Body(new ZodValidationPipe(updateSampleSchema)) dto: UpdateSampleDto,
+) {
+  return this.sampleService.update(+id, dto);
+}
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)

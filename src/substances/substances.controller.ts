@@ -36,6 +36,12 @@ export class SubstanceController {
     return this.substanceService.findAll();
   }
 
+  @Get("latest")
+    findLast() {
+    return this.substanceService.findLast();
+    }
+
+
   @Get(":id")
   findOne(@Param("id", ParseIntPipe) id: number) {
     return this.substanceService.findOne(id);

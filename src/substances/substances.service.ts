@@ -50,6 +50,16 @@ export class SubstanceService {
     return substances;
   }
 
+   async findLast() {
+  return this.prisma.substance.findFirst({
+    orderBy: { id: "desc" },
+    include: {
+      ionBase: true,
+      otherIons: true,
+    },
+  });
+}
+
   async findOne(id: number) {
     const substance = await this.prisma.substance.findUnique({
       where: { id },
