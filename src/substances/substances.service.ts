@@ -16,6 +16,7 @@ export class SubstanceService {
         tR: dto.tR,
         name: dto.name,
         class: dto.class,
+        smiles: dto.smiles,  
         molecularFormula: dto.molecularFormula,
         molecularWeight: dto.molecularWeight,
         ionBase: {

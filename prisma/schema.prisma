@@ -59,6 +59,7 @@ model Substance {
   tR               Float             @db.Float
   name             String            @db.VarChar(255)
   class            String            @db.VarChar(100)
+  smiles           String?            @db.VarChar(255)
   molecularFormula String            @db.VarChar(50)
   molecularWeight  Float             @db.Float
   ionBase          BaseIon?

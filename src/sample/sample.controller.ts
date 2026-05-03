@@ -25,6 +25,12 @@ export class SampleController {
     return this.sampleService.findAll();
   }
 
+  @Get('with-substances')
+@UseGuards(JwtAuthGuard)
+findAllWithSubstances() {
+  return this.sampleSubstanceService.findAllWithSubstances();
+}
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {

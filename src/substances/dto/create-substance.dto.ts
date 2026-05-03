@@ -20,6 +20,7 @@ export const createSubstanceSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters long"),
 
   class: z.string().min(2, "Class must be at least 2 characters long"),
+  smiles: z.string().min(2, "SMILES must be at least 2 characters long"),
 
   molecularFormula: z
     .string()

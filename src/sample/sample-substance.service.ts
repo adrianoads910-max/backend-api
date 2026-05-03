@@ -36,4 +36,19 @@ export class SampleSubstanceService {
       },
     });
   }
+
+async findAllWithSubstances() {
+  return this.prisma.sample.findMany({
+    include: {
+      substances: {          
+        include: {
+          substance: {
+            include: { ionBase: true, otherIons: true },
+          },
+        },
+      },
+      matriz: true,          
+    },
+  });
+}
 }
