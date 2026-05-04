@@ -47,6 +47,7 @@ model SampleSubstance {
   substance   Substance @relation(fields: [substanceId], references: [id], onDelete: Cascade)
   substanceId Int
   relativeArea Float?   @db.Float
+  concentration Float?   @db.Float
   extraNote    String?  @db.Text
 
   @@unique([sampleId, substanceId])

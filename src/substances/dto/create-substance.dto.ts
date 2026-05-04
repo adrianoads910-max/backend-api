@@ -3,7 +3,7 @@ import { z } from "zod";
 
 const ionSchema = z.object({
   mz: z.number().int().positive("m/z must be a positive integer"),
-  intensity: z  
+  intensity: z
     .number()
     .min(0, "Intensity must be at least 0")
     .max(100, "Intensity must be at most 100"),
@@ -18,6 +18,7 @@ export const createSubstanceSchema = z.object({
   tR: z.number().positive("Retention time must be positive"),
 
   name: z.string().min(2, "Name must be at least 2 characters long"),
+  concentration: z.number().min(0).optional(),
 
   class: z.string().min(2, "Class must be at least 2 characters long"),
   smiles: z.string().min(2, "SMILES must be at least 2 characters long"),

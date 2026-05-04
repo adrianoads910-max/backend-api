@@ -10,7 +10,7 @@ import { SampleSubstanceService } from './sample-substance.service';
 export class SampleController {
   constructor(
     private readonly sampleService: SampleService,
-  private readonly sampleSubstanceService: SampleSubstanceService,) {}
+    private readonly sampleSubstanceService: SampleSubstanceService,) { }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -26,10 +26,10 @@ export class SampleController {
   }
 
   @Get('with-substances')
-@UseGuards(JwtAuthGuard)
-findAllWithSubstances() {
-  return this.sampleSubstanceService.findAllWithSubstances();
-}
+  @UseGuards(JwtAuthGuard)
+  findAllWithSubstances() {
+    return this.sampleSubstanceService.findAllWithSubstances();
+  }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
@@ -37,14 +37,23 @@ findAllWithSubstances() {
     return this.sampleService.findOne(+id);
   }
 
+  @Patch(':id/substance/:substanceId')
+  @UseGuards(JwtAuthGuard)
+  updateSubstance(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('substanceId', ParseIntPipe) substanceId: number,
+    @Body() body: { relativeArea?: number; concentration?: number; extraNote?: string },
+  ) {
+    return this.sampleSubstanceService.updateSubstance(id, substanceId, body);
+  }
   @Patch(':id')
-@UseGuards(JwtAuthGuard)
-update(
-  @Param('id') id: string,
-  @Body(new ZodValidationPipe(updateSampleSchema)) dto: UpdateSampleDto,
-) {
-  return this.sampleService.update(+id, dto);
-}
+  @UseGuards(JwtAuthGuard)
+  update(
+    @Param('id') id: string,
+    @Body(new ZodValidationPipe(updateSampleSchema)) dto: UpdateSampleDto,
+  ) {
+    return this.sampleService.update(+id, dto);
+  }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
@@ -52,13 +61,13 @@ update(
     return this.sampleService.remove(+id);
   }
 
-   @Post(':id/substance')
+  @Post(':id/substance')
   @UseGuards(JwtAuthGuard)
   addSubstance(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: { substanceId: number; relativeArea?: number; extraNote?: string },
+    @Body() body: { substanceId: number; relativeArea?: number; extraNote?: string, concentration?: number },
   ) {
-    return this.sampleSubstanceService.addSubstance(id, body.substanceId, body.relativeArea, body.extraNote);
+    return this.sampleSubstanceService.addSubstance(id, body.substanceId, body.relativeArea, body.extraNote, body.concentration);
   }
 
   @Get(':id/substance')
