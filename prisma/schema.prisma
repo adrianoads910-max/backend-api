@@ -89,3 +89,14 @@ model FragmentIon {
 
   @@map("fragment_ions")
 }
+
+model UserMatriz {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  matriz     Matriz   @relation(fields: [matrizId], references: [id], onDelete: Cascade)
+  matrizId   Int
+
+  @@unique([userId, matrizId])
+  @@map("users_matrizes")
+}
